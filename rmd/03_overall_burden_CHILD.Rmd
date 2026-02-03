@@ -1,40 +1,56 @@
 # Overall Disease Burden
 
-```{r}
+```{r echo=FALSE, warning=FALSE, message=FALSE}
 # Load necessary packages
 pacman::p_load(tidyverse, knitr, here)
 
 # Import the overall disease data
 data_overall <- read_csv(here("data/burden-of-disease-all-causes.csv"))
+  
 ```
 
-```{r}
+```{r echo=FALSE, warning=FALSE, message=FALSE}
 # Filter the dataset to include only the three countries chosen by your group.
-data_overall_mini <- "WRITE_YOUR_CODE_HERE"
+data_overall_mini <-  data_overall %>% 
+  filter(Entity %in% c("Uganda", "Rwanda", "Kenya")) %>% 
+  rename(DALYs_overall = `DALYs (Disability-Adjusted Life Years) - All causes - Sex: Both - Age: Age-standardized (Rate)`) %>% 
+  select(-Code)
 ```
 
 ## Table of Estimates for Overall Disease Burden Over Time
 
-```{r}
+```{r echo=FALSE, warning=FALSE, message=FALSE}
 # Here render a table for the DALY burden over time for the three countries.
 # You should pivot the data wider to show each country in a separate column.
-data_overall_wide <- "WRITE_YOUR_CODE_HERE"
+data_overall_wide <- data_overall_mini %>%
+    pivot_wider(names_from  = Entity,
+    values_from = DALYs_overall)
+
+kable(data_overall_wide)
 # Use kable() from the knitr package to render the table.
 ```
 
 ## Plot Showing Trends in Overall Disease Burden Over Time
 
-```{r}
+```{r echo=FALSE, warning=FALSE, message=FALSE}
 # Here, plot a line graph showing the trend of DALY burden for the chosen countries over time. You can use ggplot2 to create this plot. Each country's line should be a different color.
 # NOTE: Use your long 'mini' data frame for plotting, not the wide data used for the table.
+# NOTE: Use your long 'mini' data frame for plotting, not the wide data used for the table.
+data_overall_mini %>%
+  ggplot(aes(x = Year,y = DALYs_overall, color = Entity)) +
+  geom_line(size = 1) +
+  labs(x = "Year", y = "DALYs (Overall)", color = "Country") +
+  theme_minimal()
 ```
 
 ## Summary of Overall Disease Burden Findings
 
 Provide a brief analysis based on the data presented in the table and chart. Highlight any significant findings or patterns. About 3 sentences.
+- Overall the Uganda registered less cases of the disease since the 2000
+- Rwanda has had a steady decline overtime
 
 ## Attribution
 
-This section was completed by [WRITE YOUR NAME HERE!]
+This section was completed by [MWEBEMBEZI JOHN FISHER]
 
 The link to the group's GitHub repository is [WRITE THE LINK HERE!]
