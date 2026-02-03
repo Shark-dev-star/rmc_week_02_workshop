@@ -16,3 +16,53 @@ The source data is from the Institute for Health Metrics and Evaluation (IHME) G
 
 ```{r child= c('01_cmnn_burden_CHILD.Rmd', '02_ncd_burden_CHILD.Rmd', '03_overall_burden_CHILD.Rmd')}
 ```
+# Communicable, Maternal, Neonatal, and Nutritional Disease Burden (CMNN)
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+# Load necessary packages
+pacman::p_load(tidyverse, knitr, here)
+
+# Import the communicable diseases data
+data_cmnn <- read_csv(here("data/burden-of-disease-cmnn.csv"))
+```
+
+```{r echo=FALSE, warning=FALSE}
+# Filter the dataset to include only the three countries chosen by your group.
+data_cmnn_mini <- data_cmnn %>% 
+  filter(Entity %in% c("Uganda", "Rwanda", "Kenya")) %>% 
+  rename(DALYs_cmmn = `DALYs (Disability-Adjusted Life Years) - Communicable, maternal, neonatal, and nutritional diseases - Sex: Both - Age: Age-standardized (Rate)`) %>% 
+  select(-Code)
+```
+
+## Table of Estimates for CMNN Burden Over Time
+
+```{r echo=FALSE, warning=FALSE}
+# Here render a table for the DALY burden over time for the three countries.
+# You should pivot the data wider to show each country in a separate column.
+data_cmnn_wide <- data_cmnn_mini %>%
+    pivot_wider(names_from  = Entity,
+    values_from = DALYs_cmmn)
+
+kable(data_cmnn_wide)
+  
+# Use kable() from the knitr package to render the table.
+```
+
+## Plot Showing Trends in CMNN Burden Over Time
+
+```{r echo=FALSE, warning=FALSE}
+# Here, plot a line graph showing the trend of DALY burden for the chosen countries over time. You can use ggplot2 to create this plot. Each country's line should be a different color.
+# NOTE: Use your long 'mini' data frame for plotting, not the wide data used for the table.
+
+data_cmnn_mini %>%
+  ggplot(aes(x = Year,y = DALYs_cmmn, color = Entity)) +
+  geom_line(size = 1) +
+  labs(x = "Year", y = "DALYs (CMMN)", color = "Country") +
+  theme_minimal()
+```
+
+## Summary of CMNN Burden Findings
+
+Provide a brief analysis based on the data presented in the table and chart. Highlight any significant findings or patterns. About 3 sentences.
+- DALY burden of the listed disease has gradually dropped over the years.
+- Uganda has toppped all cases over the years.
